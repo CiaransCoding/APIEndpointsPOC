@@ -7,25 +7,25 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace APIEndpointsPOC.Endpoints.Customers
-{ 
-    public class Get : EndpointBaseAsync
-        .WithRequest<int>
-        .WithActionResult<GetCustomerResult>
+{
+    public class Create : EndpointBaseAsync
+        .WithRequest<CreateCustomerRequest>
+        .WithActionResult<CreateCustomerResult>
     {
         private readonly IGenericAsyncRepository<Customer> _customerRepository;
 
-        public Get(IGenericAsyncRepository<Customer> customerRepository)
+        public Create(IGenericAsyncRepository<Customer> customerRepository)
         {
             _customerRepository = customerRepository;
         }
 
-        [HttpGet("/api/customers/{id}", Name = "[controller]_customer")]
+        [HttpPost("/api/customer", Name = "[controller]_customer")]
         //[Route("avm")]
         [Produces("application/json")]
         [Consumes("application/json")]
-        [SwaggerRequestExample(typeof(ListCustomerRequest), typeof(ListCustomerRequestExample))]
-        [ProducesResponseType(typeof(ListCustomerResult), StatusCodes.Status200OK)]
-        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ListCustomerResultExample))]
+        [SwaggerRequestExample(typeof(CreateCustomerRequest), typeof(CreateCustomerRequestExample))]
+        [ProducesResponseType(typeof(CreateCustomerResult), StatusCodes.Status200OK)]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(CreateCustomerResultExample))]
         //[ProducesResponseType(typeof(WebAPIException), StatusCodes.Status400BadRequest)]
         //[SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(BadRequestExample))]
         //[ProducesResponseType(typeof(WebAPIException), StatusCodes.Status401Unauthorized)]
@@ -36,9 +36,9 @@ namespace APIEndpointsPOC.Endpoints.Customers
         ////[SwaggerResponseExample(StatusCodes.Status409Conflict, typeof(AddressMatchConflictExamples))]
         //[ProducesResponseType(typeof(WebAPIException), StatusCodes.Status500InternalServerError)]
         ////[SwaggerResponseExample(StatusCodes.Status500InternalServerError, typeof(InternalServerExamples))]
-        public async override Task<ActionResult<GetCustomerResult>> HandleAsync(int id, CancellationToken cancellationToken = default)
+        public async override Task<ActionResult<CreateCustomerResult>> HandleAsync([FromBody]CreateCustomerRequest request, CancellationToken cancellationToken = default)
         {
-            return Ok(await _customerRepository.GetAsync(id));
+            return Ok(await _customerRepository.CreateAsync(request.Customer));
         }
     }
 }

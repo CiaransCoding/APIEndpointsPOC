@@ -4,22 +4,23 @@ using APIEndpointsPOC.DomainModels;
 using APIEndpointsPOC.Services.Contracts;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
+using SBS.WebAPI.Common.Errors;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace APIEndpointsPOC.Endpoints.Customers
-{ 
-    public class Get : EndpointBaseAsync
-        .WithRequest<int>
-        .WithActionResult<GetCustomerResult>
+{
+    public class List : EndpointBaseAsync
+        .WithRequest<ListCustomerRequest>
+        .WithActionResult<ListCustomerResult>
     {
-        private readonly IGenericAsyncRepository<Customer> _customerRepository;
+        private readonly IGenericAsyncRepository<Customer> _customersRepository;
 
-        public Get(IGenericAsyncRepository<Customer> customerRepository)
+        public List(IGenericAsyncRepository<Customer> customersRepository)
         {
-            _customerRepository = customerRepository;
+            _customersRepository = customersRepository;
         }
 
-        [HttpGet("/api/customers/{id}", Name = "[controller]_customer")]
+        [HttpGet("/api/customers/", Name = "[controller]_customers")]
         //[Route("avm")]
         [Produces("application/json")]
         [Consumes("application/json")]
@@ -36,9 +37,9 @@ namespace APIEndpointsPOC.Endpoints.Customers
         ////[SwaggerResponseExample(StatusCodes.Status409Conflict, typeof(AddressMatchConflictExamples))]
         //[ProducesResponseType(typeof(WebAPIException), StatusCodes.Status500InternalServerError)]
         ////[SwaggerResponseExample(StatusCodes.Status500InternalServerError, typeof(InternalServerExamples))]
-        public async override Task<ActionResult<GetCustomerResult>> HandleAsync(int id, CancellationToken cancellationToken = default)
+        public async override Task<ActionResult<ListCustomerResult>> HandleAsync([FromQuery]ListCustomerRequest request, CancellationToken cancellationToken = default)
         {
-            return Ok(await _customerRepository.GetAsync(id));
+            return Ok(await _customersRepository.GetAllAsync(request.MaxResults, request.IncludeCeased));
         }
     }
 }

@@ -5,7 +5,8 @@ using APIEndpointsPOC.Services.Contracts;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton<IGenericAsyncRepository<Customer>, GenericAsyncRepository<Customer>>();
+builder.Services.AddScoped<IGenericAsyncRepository<Customer>, CustomerAsyncRepository>();
+builder.Services.AddScoped<IGenericAsyncRepository<Account>, AccountAsyncRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
